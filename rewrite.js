@@ -32,7 +32,7 @@ for(var c=0; c<brickColumnCount; c++) {
 function drawBricks() {
     for(var c=0; c<brickColumnCount; c++) {
         for(var r=0; r<brickRowCount; r++) {
-            if(bricks[c][r].visible === true) {
+            if(bricks[c][r].visible) {
                 ctx.beginPath();
                 ctx.rect(bricks[c][r].x, bricks[c][r].y, brickWidth, brickHeight);
                 ctx.fillStyle = "#0095DD";
@@ -48,7 +48,8 @@ document.addEventListener("keydown", keyDownHandler, false);
 
 
 function keyDownHandler(e) {
-    if(e.key === "Right" && paddleX < canvas.width - paddleWidth || e.key === "ArrowRight" && paddleX < canvas.width - paddleWidth) {
+    if ((e.key === 'Right' || e.key === "ArrowRight") && (paddleX < canvas.width - paddleWidth)) 
+    {
         paddleX += 15;
     }
     else if(e.key === "Left" && paddleX > 0 || e.key === "ArrowLeft" && paddleX > 0) {
@@ -57,11 +58,11 @@ function keyDownHandler(e) {
 }
 
 
-function detectCollision() {
+function detectBrickCollision() {
     for(var c=0; c<brickColumnCount; c++) {
         for(var r=0; r<brickRowCount; r++) {
             var brick = bricks[c][r];
-            if(ballX + ballRadius >= brick[c][r].x && ballX + ballRadius <= brick[c][r].x && ballY + ballRadius >= brick[c][r].y && ballY + ballRadius <= brick[c][r].y + brickHeight ) {
+            if(ballX + ballRadius >= brick.x && ballX + ballRadius <= brick.x + brickWidth && ballY + ballRadius >= brick.y && ballY + ballRadius <= brick.y + brickHeight) {
                 directionY = -directionY;
                 brick.visible = false;
             }
@@ -87,7 +88,7 @@ function drawPaddle() {
 }
 
 
-function edgeCollision() {
+function detectWindowCollision() {
     if(ballX + directionX > canvas.width-ballRadius || ballX + directionX < ballRadius) {
         directionX = -directionX;
     }
@@ -116,8 +117,8 @@ function ballMovement() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ballMovement();
-    edgeCollision();
-    detectCollision();
+    detectWindowCollision();
+    detectBrickCollision();
     drawBricks();
     drawBall();
     drawPaddle();
