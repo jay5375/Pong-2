@@ -181,14 +181,16 @@ class BrickBreaker {
     }
 
     detectBallCollisionWithBrick() {
-        for(var c=0 ; c<this.columns; c++) {
-            for(var r=0; r<this.rows; r++) {
+        for (var c = 0; c < this.columns; c++) {
+            for (var r = 0; r < this.rows; r++) {
                 var brick = this.bricks[c][r];
-                if(this.ball.x + this.ball.radius >= brick.x && this.ball.x + this.ball.radius <= brick.x + brick.width && this.ball.y + this.ball.radius >= brick.y && this.ball.y + this.ball.radius <= brick.y + brick.height ||
-                    this.ball.X - this.ball.radius >= brick.x && this.ball.x - this.ball.radius <= brick.x + brick.width && this.ball.y + this.ball.radius >= brick.y && this.ball.y+ this.ball.radius <= brick.y + brick.height ||
-                    this.ball.x + this.ball.radius >= brick.x && this.ball.x + this.ball.radius <= brick.x + brick.width && this.ball.y - this.ball.radius >= brick.y && this.ball.y - this.ball.radius <= brick.y + brick.height) {
-                    this.ball.invertYDirection();
-                    brick.visible = false;
+                if (brick.visible) {
+                    if (this.ball.x + this.ball.radius >= brick.x && this.ball.x + this.ball.radius <= brick.x + brick.width && this.ball.y + this.ball.radius >= brick.y && this.ball.y + this.ball.radius <= brick.y + brick.height ||
+                        this.ball.x - this.ball.radius >= brick.x && this.ball.x - this.ball.radius <= brick.x + brick.width && this.ball.y + this.ball.radius >= brick.y && this.ball.y + this.ball.radius <= brick.y + brick.height ||
+                        this.ball.x + this.ball.radius >= brick.x && this.ball.x + this.ball.radius <= brick.x + brick.width && this.ball.y - this.ball.radius >= brick.y && this.ball.y - this.ball.radius <= brick.y + brick.height) {
+                        this.ball.invertYDirection();
+                        brick.visible = false;
+                    }
                 }
             }
         }
