@@ -29,7 +29,7 @@ class Ball {
         //logic to draw it out 
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
-    this.ctx.fillStyle = "#000000";
+    this.ctx.fillStyle = "#0095DD";
     this.ctx.fill();
     this.ctx.closePath();
     }
