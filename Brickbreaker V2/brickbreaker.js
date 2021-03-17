@@ -13,11 +13,11 @@ class Ball {
     }
 
     invertYDirection(){
-        this.yDirection = -this.yDirection
+        this.yDirection *= -1
     }
 
     invertXDirection(){
-        this.xDirection = -this.xDirection
+        this.xDirection *= -1
     }
 
     update() {
@@ -27,11 +27,11 @@ class Ball {
 
     render() {
         //logic to draw it out 
-    this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
-    this.ctx.fillStyle = "#0095DD";
-    this.ctx.fill();
-    this.ctx.closePath();
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+        this.ctx.fillStyle = "#0095DD";
+        this.ctx.fill();
+        this.ctx.closePath();
     }
 }
 
@@ -44,6 +44,8 @@ class Paddle {
         this.height = height;
         this.speed = 4;
         this.canvasHeight = canvasHeight;
+        this.moveLeft = false;
+        this.moveRight = false;
     }
 
     moveLeft() {
@@ -55,11 +57,11 @@ class Paddle {
     }
 
     render() {
-    this.ctx.beginPath();
-    this.ctx.rect(this.x, this.canvasHeight - this.height, this.width, this.height);
-    this.ctx.fillStyle = "#0095DD";
-    this.ctx.fill();
-    this.ctx.closePath();
+        this.ctx.beginPath();
+        this.ctx.rect(this.x, this.canvasHeight - this.height, this.width, this.height);
+        this.ctx.fillStyle = "#0095DD";
+        this.ctx.fill();
+        this.ctx.closePath();
     }
 }
 
@@ -77,11 +79,13 @@ class Brick {
     }
         
     render() {
-        this.ctx.beginPath();
-        this.ctx.rect(this.x, this.y, this.width, this.height);
-        this.ctx.fillStyle = "#0095DD";
-        this.ctx.fill();
-        this.ctx.closePath();
+        if (this.visible) {
+            this.ctx.beginPath();
+            this.ctx.rect(this.x, this.y, this.width, this.height);
+            this.ctx.fillStyle = "#0095DD";
+            this.ctx.fill();
+            this.ctx.closePath();
+        }
     }
 }
 
@@ -94,8 +98,6 @@ class BrickBreaker {
         this.canvasHeight = canvasHeight;
         this.columns = 20;
         this.rows = 5;
-        this.moveRight = false;
-        this.moveLeft = false;
         this.initializeEntities();
         this.initializeListeners();
     }
@@ -113,26 +115,26 @@ class BrickBreaker {
 
     keyDownHandler(e) {
         if ((e.key === 'Right' || e.key === "ArrowRight") && (this.paddle.x < this.canvasWidth - this.paddle.width)) {
-        this.moveRight = true;
-        } else if(e.key === "Left" && this.paddle.x > 0 || e.key === "ArrowLeft" && this.paddle.x > 0) {
-        this.moveLeft = true;
+            this.paddle.moveRight === true;
+        } else if ((e.key === 'Left' || e.key === "ArrowLeft") && (this.paddle.x > 0)) {
+            this.paddle.moveLeft === true;
         }
     }
 
     keyUpHandler(e) {
         if(e.key === "Right" || e.key === "ArrowRight") {
-            this.moveRight = false;
+            this.paddle.moveRight = false;
         } else if(e.key === "Left" || e.key === "ArrowLeft") {
-            this.moveLeft = false;
+            this.paddle.moveLeft = false;
         }
     }
 
     movePaddle() {
-        if (this.moveRight) {
+        if (this.paddle.moveRight) {
             if (this.paddle.x + this.paddle.width < this.canvasWidth) {
                 this.paddle.moveRight();
             }
-        } else if(this.moveLeft) {
+        } else if(this.paddle.moveLeft) {
             if (this.paddle.x > 0) {
                 this.paddle.moveLeft();
             }
@@ -153,7 +155,6 @@ class BrickBreaker {
     drawBricks() {
         for(let c=0; c < this.columns; c++) {
             for(let r=0; r < this.rows; r++) {
-                if (this.bricks[c][r].visible)
                 this.bricks[c][r].render();
             }
         }
@@ -169,7 +170,7 @@ class BrickBreaker {
         else if(this.ball.y + this.ball.yDirection > this.canvasHeight - this.ball.radius) {
             if(this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
                 if(this.ball.y === this.ball.y - this.paddle.height){
-                    this.directionY = -this.directionY;
+                    this.ball.invertYDirection();
                 }
             } else {
                 alert("GAME OVER");
