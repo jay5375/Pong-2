@@ -36,7 +36,7 @@ class Ball {
 }
 
 class Paddle {
-    constructor(ctx, x, y, width, height, canvasHeight) {
+    constructor(ctx, x, y, width, height, canvasHeight, canvasWidth) {
         this.ctx = ctx;
         this.x = x;
         this.y = y;
@@ -44,16 +44,15 @@ class Paddle {
         this.height = height;
         this.speed = 4;
         this.canvasHeight = canvasHeight;
-        this.moveLeft = false;
-        this.moveRight = false;
+        this.canvasWidth = canvasWidth;
+        this.direction = 0;
     }
 
-    moveLeft() {
-        this.x -= this.speed;
-    }
-
-    moveRight() {
-        this.x += this.speed;
+    move() {
+        var nextX = this.x + this.speed * this.direction
+        if ((nextX >= 0) && (nextX <= this.canvasWidth - this.width)) {
+            this.x = nextX
+        }
     }
 
     render() {
@@ -90,12 +89,12 @@ class Brick {
 }
 
 class BrickBreaker {
-    constructor(canvasWidth, canvasHeight, fps) {
+    constructor(fps) {
         this.fps = fps;
         this.canvas = document.querySelector('canvas');
         this.ctx = this.canvas.getContext("2d");
-        this.canvasWidth = canvasWidth;
-        this.canvasHeight = canvasHeight;
+        this.canvasWidth = this.canvas.width;
+        this.canvasHeight = this.canvas.height;
         this.columns = 20;
         this.rows = 5;
         this.initializeEntities();
@@ -109,36 +108,26 @@ class BrickBreaker {
 
     initializeEntities() {
         this.ball = new Ball(this.ctx, this.canvasWidth / 2, this.canvasHeight / 2, Math.PI * 3);
-        this.paddle = new Paddle(this.ctx, this.canvasWidth / 2, this.canvasHeight, 100, 15, 970);
+        this.paddle = new Paddle(this.ctx, this.canvasWidth / 2, this.canvasHeight, 100, 15, this.canvasHeight, this.canvasWidth);
         this.bricks = this.createBricks();
     }
 
     keyDownHandler(e) {
-        if ((e.key === 'Right' || e.key === "ArrowRight") && (this.paddle.x < this.canvasWidth - this.paddle.width)) {
-            this.paddle.moveRight === true;
-        } else if ((e.key === 'Left' || e.key === "ArrowLeft") && (this.paddle.x > 0)) {
-            this.paddle.moveLeft === true;
+        if (e.key === 'Right' || e.key === "ArrowRight") {
+            this.paddle.direction = 1;
+        } else if (e.key === 'Left' || e.key === "ArrowLeft") {
+            this.paddle.direction = -1;
         }
     }
 
     keyUpHandler(e) {
-        if(e.key === "Right" || e.key === "ArrowRight") {
-            this.paddle.moveRight = false;
-        } else if(e.key === "Left" || e.key === "ArrowLeft") {
-            this.paddle.moveLeft = false;
+        if (e.key === "Right" || e.key === "ArrowRight" || e.key === "Left" || e.key === "ArrowLeft") {
+            this.paddle.direction = 0;
         }
     }
 
     movePaddle() {
-        if (this.paddle.moveRight) {
-            if (this.paddle.x + this.paddle.width < this.canvasWidth) {
-                this.paddle.moveRight();
-            }
-        } else if(this.paddle.moveLeft) {
-            if (this.paddle.x > 0) {
-                this.paddle.moveLeft();
-            }
-        }
+        this.paddle.move()
     }
 
     createBricks() {
@@ -237,5 +226,5 @@ class BrickBreaker {
 }
 
 
-new BrickBreaker(1915, 970, 10).startGame();
+new BrickBreaker(10).startGame();
 
