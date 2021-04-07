@@ -62,13 +62,17 @@ function detectBrickCollision() {
     for(var c=0; c<brickColumnCount; c++) {
         for(var r=0; r<brickRowCount; r++) {
             var brick = bricks[c][r];
-            if(ballX + ballRadius >= brick.x && ballX + ballRadius <= brick.x + brickWidth && ballY + ballRadius >= brick.y && ballY + ballRadius <= brick.y + brickHeight) {
+            if(ballX + ballRadius >= brick.x && ballX + ballRadius <= brick.x + brickWidth && ballY + ballRadius >= brick.y && ballY + ballRadius <= brick.y + brickHeight || 
+                ballX - ballRadius >= brick.x && ballX - ballRadius <= brick.x + brickWidth && ballY + ballRadius >= brick.y && ballY + ballRadius <= brick.y + brickHeight ||
+                ballX + ballRadius >= brick.x && ballX + ballRadius <= brick.x + brickWidth && ballY - ballRadius >= brick.y && ballY - ballRadius <= brick.y + brickHeight) {
                 directionY = -directionY;
                 brick.visible = false;
             }
         }
     }
 }
+
+
 
 
 function drawBall() {
